@@ -1,12 +1,13 @@
 class Object():
 	instances = []
 
-	def __init__(self, bonds, opts={}):
-		self.bonds = bonds
+	def __new__(self, parts, opts={}):
+		self.parts = parts
 		self.opts = opts
 
-		self.id = Object.instances.len
-		Object.instances.len.append(self)
+		self.id = len(Object.instances)
+		Object.instances.append(self)
+		return self.id
 
 	def updateRecord(self):
 		Object.instances[self.id] = self;
@@ -14,13 +15,13 @@ class Object():
 class Particle():
 	instances = []
 
-	def __init__(self, x, y):
-		super(Particle, self).__init__()
+	def __new__(self, x, y):
 		self.x = x
 		self.y = y
 
-		self.id = Particle.instances.len
-		Particle.instances.len.append(self)
+		self.id = len(Particle.instances)
+		Particle.instances.append(self)
+		return self.id
 
 	def updateRecord(self):
 		Particle.instances[self.id] = self;
@@ -28,12 +29,13 @@ class Particle():
 class Bond():
 	instances = []
 
-	def __init__(self, A, B):
+	def __new__(self, A, B):
 		self.A = A
 		self.B = B
 
-		self.id = Bond.instances.len
-		Bond.instances.len.append(self)
+		self.id = len(Bond.instances)
+		Bond.instances.append(self)
+		return self.id
 
 	def updateRecord(self):
 		Bond.instances[self.id] = self;
@@ -54,4 +56,20 @@ class PrimativeDrawer():
 		pass
 
 	def rect(self, x, y, width, height):
-		pass
+		parts = []
+		bonds = []
+
+		for i in range(x, x + width):
+			for j in range(y, y + height):
+				parts.append(Particle(i, j));
+
+		for p in parts:
+			if not Particle.instances[p].x == x + width:
+				bonds.append(Bond(p, p+1))
+
+			if not Particle.instances[p].y == y + height:
+				bonds.append(Bond(p, p+width))
+
+		return Object(parts)
+
+
