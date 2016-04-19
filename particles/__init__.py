@@ -1,12 +1,14 @@
 class Object():
 	instances = []
 
-	def __new__(self, parts, opts={}):
+	def __init__(self, parts, opts={}):
 		self.parts = parts
 		self.opts = opts
 
 		self.id = len(Object.instances)
 		Object.instances.append(self)
+
+	def __int__(self):
 		return self.id
 
 	def updateRecord(self):
@@ -15,12 +17,14 @@ class Object():
 class Particle():
 	instances = []
 
-	def __new__(self, x, y):
+	def __init__(self, x, y):
 		self.x = x
 		self.y = y
 
 		self.id = len(Particle.instances)
 		Particle.instances.append(self)
+
+	def __int__(self):
 		return self.id
 
 	def updateRecord(self):
@@ -29,12 +33,14 @@ class Particle():
 class Bond():
 	instances = []
 
-	def __new__(self, A, B):
+	def __init__(self, A, B):
 		self.A = A
 		self.B = B
 
 		self.id = len(Bond.instances)
 		Bond.instances.append(self)
+
+	def __int__(self):
 		return self.id
 
 	def updateRecord(self):
@@ -55,21 +61,21 @@ class PrimativeDrawer():
 	def __init__(self):
 		pass
 
-	def rect(self, x, y, width, height):
+	def rect(self, x, y, width, height, opts={}):
 		parts = []
 		bonds = []
 
 		for i in range(x, x + width):
 			for j in range(y, y + height):
-				parts.append(Particle(i, j));
+				parts.append(int(Particle(i, j)))
 
 		for p in parts:
 			if not Particle.instances[p].x == x + width:
-				bonds.append(Bond(p, p+1))
+				bonds.append(int(Bond(p, p+1)))
 
 			if not Particle.instances[p].y == y + height:
-				bonds.append(Bond(p, p+width))
+				bonds.append(int(Bond(p, p+width)))
 
-		return Object(parts)
+		return Object(parts, opts)
 
 
